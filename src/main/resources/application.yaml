@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: url-shortener
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/url_shortener}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: ${REDIS_TIMEOUT:PT2S}
+      connect-timeout: ${REDIS_CONNECT_TIMEOUT:PT2S}
+
+server:
+  port: ${SERVER_PORT:8081}
+app:
+  base-url: ${APP_BASE_URL:http://localhost:8081}
+  security:
+    jwt:
+      secret: ${JWT_SECRET:local-development-jwt-secret-change-before-production}
+      expiration: ${JWT_EXPIRATION:PT1H}
+  cache:
+    short-url:
+      default-ttl: ${SHORT_URL_CACHE_TTL:PT1M}
+  rate-limit:
+    create-url:
+      limit: ${CREATE_URL_RATE_LIMIT:20}
+      window: ${CREATE_URL_RATE_LIMIT_WINDOW:PT1M}

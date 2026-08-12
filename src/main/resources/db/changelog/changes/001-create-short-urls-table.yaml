@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-short-urls-table
+      author: maharram
+
+      changes:
+        - createTable:
+            tableName: short_urls
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: short_code
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: original_url
+                  type: VARCHAR(2048)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: click_count
+                  type: BIGINT
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: last_accessed_at
+                  type: TIMESTAMP
