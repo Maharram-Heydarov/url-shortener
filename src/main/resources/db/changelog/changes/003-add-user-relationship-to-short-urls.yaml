@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-add-user-relationship-to-short-urls
+      author: maharram
+
+      changes:
+        - addColumn:
+            tableName: short_urls
+            columns:
+              - column:
+                  name: user_id
+                  type: BIGINT
+
+        - sql:
+            dbms: postgresql
+            sql: |
+              INSERT INTO users (id, email, password, created_at)
+              SELECT 0, 'migration-owner@url-shortener.local', '!', CURRENT_TIMESTAMP
+              WHERE EXISTS (SELECT 1 FROM short_urls)
+              ON CONFLICT (id) DO NOTHING;
+
+        - sql:
+            dbms: postgresql
+            sql: |
+              UPDATE short_urls
+              SET user_id = 0
+              WHERE user_id IS NULL;
+
+        - addNotNullConstraint:
+            tableName: short_urls
+            columnName: user_id
+            columnDataType: BIGINT
+
+        - addForeignKeyConstraint:
+            constraintName: fk_short_urls_user
+            baseTableName: short_urls
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+
+        - createIndex:
+            indexName: idx_short_urls_user_created_at
+            tableName: short_urls
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: created_at
+

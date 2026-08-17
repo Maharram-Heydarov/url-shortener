@@ -1,0 +1,36 @@
+services:
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: url-shortener-postgres
+    environment:
+      POSTGRES_DB: url_shortener
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - url_shortener_postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:8-alpine
+    container_name: url-shortener-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - url_shortener_redis_data:/data
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: url-shortener-redisinsight
+    ports:
+      - "5540:5540"
+    volumes:
+      - url_shortener_redisinsight_data:/data
+    depends_on:
+      - redis
+
+volumes:
+  url_shortener_postgres_data:
+  url_shortener_redis_data:
+  url_shortener_redisinsight_data:
